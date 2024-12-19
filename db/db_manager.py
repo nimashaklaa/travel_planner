@@ -26,7 +26,7 @@ def save_profile_to_db(profile):
     print("User profile saved to MongoDB.")
 
 def retrieve_profile_from_db():
-    """Retrieve user profile data from the MongoDB database."""
+    """Retrieve user_profile data from the MongoDB database."""
     profile = {}
 
     # Retrieve interests

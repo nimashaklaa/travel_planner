@@ -1,7 +1,7 @@
 import spacy
 from openai import OpenAI
 
-from agents.intent_classification.intent_classification import classify_intent
+from agents.context_agent.context_agent import generate_constraint_set
 from db.db_manager import save_profile_to_db
 from nlp.nlp_resources import get_nlp_instance
 from nlp.topic_categorizer import categorize_topics_with_llm
@@ -23,30 +23,22 @@ def get_response(prompt):
 def handle_chat(chat_history_path):
     with open(chat_history_path, "a") as chat_file:
         print("Chatbot is ready to talk! Type 'quit' to exit.")
-        first_message =True
-        chat_active = True
         while True:
             user_message = input("You: ")
             if user_message.lower() == 'quit':
                 break
 
-            if first_message:
-                intent = classify_intent(user_message)
-                if 'travel' not in intent:
-                    print("Sorry, I can only assist with travel-related queries.")
-                    chat_active = False
-                    break
-                first_message = False
+            if "plan a trip" in user_message.lower():
+                constraint_set = generate_constraint_set(user_message)
+                print("AI:", constraint_set)
+            # ai_response = get_response(user_message)
+            # print("AI:", ai_response)
+            # Write messages to file
+            chat_file.write(f"You: {user_message}\n")
+            chat_file.write(f"AI: {constraint_set}\n")
 
-            if chat_active:
-                ai_response = get_response(user_message)
-                print("AI:", ai_response)
-                # Write messages to file
-                chat_file.write(f"You: {user_message}\n")
-                chat_file.write(f"AI: {ai_response}\n")
-
-    if chat_active:
-        # Process chat history to create user profile
+    # if chat_active:
+        # Process chat history to create user_profile
         profile = create_user_profile(chat_history_path)
         save_profile_to_db(profile)
         print("Chat session ended and profile updated.")
@@ -61,7 +53,7 @@ def extract_user_messages(chat_content):
     return " ".join(user_messages)
 
 def create_user_profile(chat_history_path):
-    """ Generates a user profile from chat history by categorizing topics. """
+    """ Generates a user_profile from chat history by categorizing topics. """
     with open(chat_history_path, "r") as file:
         chat_content = file.read()
 

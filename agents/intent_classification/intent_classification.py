@@ -17,7 +17,8 @@ def load_data(file_path):
     try:
         with open(file_path, 'r') as file:
             data = json.load(file)
-        return pd.DataFrame(data, columns=['sentence', 'intent'])
+        df= pd.DataFrame(data, columns=['sentence', 'intent'])
+        return df
     except FileNotFoundError:
         print(f"Error: The file {file_path} was not found.")
         return pd.DataFrame(columns=['sentence', 'intent'])
@@ -41,8 +42,24 @@ val_labels = val_df['label'].tolist()
 test_texts = test_df['sentence'].tolist()
 test_labels = test_df['label'].tolist()
 
+print(f"Training texts: {train_texts[:3]}")
+print(f"Validation texts: {val_texts[:3]}")
+print(f"Test texts: {test_texts[:3]}")
+
 # Load BERT tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+# # Function to tokenize data and show examples
+# def tokenize_data(texts, desc=""):
+#     encodings = tokenizer(texts, truncation=True, padding=True, max_length=128)
+#     # Show examples of tokenization for the first few items
+#     print(f"\nExamples of {desc} tokenization:")
+#     for i in range(min(3, len(texts))):  # Show up to 3 examples
+#         print(f"Original Text: {texts[i]}")
+#         print(f"Tokenized Input IDs: {encodings['input_ids'][i]}")
+#         print(f"Attention Mask: {encodings['attention_mask'][i]}")
+#     return encodings
+
 # Tokenize data
 train_encodings = tokenizer(train_texts, truncation=True, padding=True, max_length=128)
 val_encodings = tokenizer(val_texts, truncation=True, padding=True, max_length=128)
@@ -67,12 +84,18 @@ train_dataset = IntentDataset(train_encodings, train_labels)
 val_dataset = IntentDataset(val_encodings, val_labels)
 test_dataset = IntentDataset(test_encodings, test_labels)
 
-# Specify the directory to save/load model
-MODEL_PATH = 'D:/semester 7/FYP/agents/intent_classification/model'
-
 # Model initialization
 model = BertForSequenceClassification.from_pretrained('bert-base-uncased', num_labels=len(intent_labels))
+
+# Set up the optimizer
 optimizer = AdamW(model.parameters(), lr=3e-4)
+
+# Data loaders
+train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=16)
+test_loader = DataLoader(test_dataset, batch_size=16)
+
+# Training and evaluation
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model.to(device)
 
@@ -81,6 +104,8 @@ def train(model, train_loader, val_loader, optimizer, num_epochs=3):
     for epoch in range(num_epochs):
         model.train()
         total_loss, total_val_loss, total_val_accuracy = 0, 0, 0
+
+        # Training
         for batch in train_loader:
             batch = {k: v.to(device) for k, v in batch.items()}
             optimizer.zero_grad()
@@ -90,6 +115,7 @@ def train(model, train_loader, val_loader, optimizer, num_epochs=3):
             optimizer.step()
             total_loss += loss.item()
 
+        # Validation
         model.eval()
         for batch in val_loader:
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -98,27 +124,18 @@ def train(model, train_loader, val_loader, optimizer, num_epochs=3):
                 loss = outputs.loss
                 logits = outputs.logits
                 total_val_loss += loss.item()
+
                 preds = torch.argmax(logits, dim=1)
                 total_val_accuracy += accuracy_score(batch['labels'].cpu(), preds.cpu())
 
         print(f"Epoch {epoch+1}: Train Loss: {total_loss / len(train_loader)}, Val Loss: {total_val_loss / len(val_loader)}, Val Accuracy: {total_val_accuracy / len(val_loader)}")
 
-# Data loaders
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=16)
-test_loader = DataLoader(test_dataset, batch_size=16)
 
 # Training the model
 train(model, train_loader, val_loader, optimizer)
-model.save_pretrained(MODEL_PATH)
-tokenizer.save_pretrained(MODEL_PATH)
-
-# Load the model for evaluation
-model = BertForSequenceClassification.from_pretrained(MODEL_PATH)
-model.to(device)
 
 # Evaluation
-def evaluate(model, loader):
+def evaluate(model, loader, dataset_name="Test"):
     model.eval()
     all_preds, all_labels = [], []
     for batch in loader:
@@ -134,6 +151,9 @@ def evaluate(model, loader):
     print("Classification Report:")
     print(report)
 
+    # Save to a text file
+    with open(f"{dataset_name}_classification_report.txt", "w") as f:
+        f.write(report)
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
