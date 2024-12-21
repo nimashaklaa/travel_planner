@@ -2,6 +2,7 @@ import spacy
 from openai import OpenAI
 
 from agents.context_agent.context_agent import generate_constraint_set
+from agents.planner_agent.planner_fun import TravelPlanner
 from db.db_manager import save_profile_to_db
 from nlp.nlp_resources import get_nlp_instance
 from nlp.topic_categorizer import categorize_topics_with_llm
@@ -29,10 +30,14 @@ def handle_chat(chat_history_path):
                 break
 
             if "plan a trip" in user_message.lower():
+
                 constraint_set = generate_constraint_set(user_message)
                 print("AI:", constraint_set)
+                planner = TravelPlanner()
+                planner.run(constraint_set)
             # ai_response = get_response(user_message)
             # print("AI:", ai_response)
+
             # Write messages to file
             chat_file.write(f"You: {user_message}\n")
             chat_file.write(f"AI: {constraint_set}\n")

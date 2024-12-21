@@ -201,7 +201,7 @@ class TravelPlanner:
         Travel Plan: Let's think step by step. First, """
 
         text = self.notebook.list_all()
-        text = "\n".join(f"Index {item['index']} - {item['Short Description']}: {item['Content']}" for item in data)
+        # text = "\n".join(f"Index {item['index']} - {item['Short Description']}: {item['Content']}" for item in data)
         return COT_PLANNER_INSTRUCTION.format(text=text, query=query)
 
     def run(self, user_query):

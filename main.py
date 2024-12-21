@@ -4,12 +4,13 @@ from chat.chat_manager import handle_chat
 from db.db_manager import retrieve_profile_from_db
 
 
+
 def main():
-    planner = TravelPlanner()
-    user_query = "Plan a trip from New York to Tokyo."
-    planner.run(user_query)
-    # chat_history_path = "chat_history.txt"
-    # handle_chat(chat_history_path)
+    chat_history_path = "chat_history.txt"
+    handle_chat(chat_history_path)
+
+
+
     # user_profile = retrieve_profile_from_db()
     # summery = get_summery(user_profile)
     # profile_file_path = "user_profile.txt"
