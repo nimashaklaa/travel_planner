@@ -89,7 +89,7 @@ def categorize_topics_with_llm(doc):
     sentences = break_into_sentences_with_llm(doc.text)
 
     pronouns = {'i', 'a', 'us', 'we', 'you', 'he', 'she', 'they', 'me', 'him', 'her', 'them', 'my', 'your', 'his',
-                'its', 'our', 'their'}
+                'its', 'our', 'their','the','this'}
     for sent in sentences:
         # Analyze sentiment
         print("sent: ", sent)
@@ -122,7 +122,7 @@ def categorize_topics_with_llm(doc):
             # Use LLM to categorize the topic
             category = categorize_with_llm(topic)
 
-            print(lemmatized_topic, category)
+            # print(lemmatized_topic, category)
 
             # Categorize based on sentiment and LLM response
             # if sentiment > 0.05:

@@ -142,3 +142,112 @@ Food Preferences: Enjoy dining experiences that include sushi, seafood, and spic
 Activities: Include sports events if available, casual walking tours, opportunities for photography, and creative experiences like art workshops. 
 
 Other: Avoid loud music venues or overly crowded events, ensure activities allow for social interaction without overwhelming noise.
+You: I want to plan a trip to NewYork with my pet
+AI: ***** Personalized Query *****
+User Profile Text: The user has a variety of interests that include technology (buying a tablet, NVIDIA open course), professional development (reading academic papers, attending seminars, and graduate interviews), and social activities (participating in an alumni association, attending weddings and parties). They have a notable interest in sports events like El Clásico, the Champions League final, and boxing matches.
+
+When it comes to dislikes, the user is not fond of loud music or sticky things. Their food preferences include dining at restaurants, enjoying sushi, seafood, spicy food, and having various lunches and dinners, highlighting a social aspect to their eating habits.
+
+The user's hobbies are centered around physical activity and creativity. They enjoy fitness activities like workouts, running, and badminton, as well as creative pursuits such as photography, painting, and drawing. They also show an interest in casual outdoor activities such as walking.
+
+Original Query: I want to plan a trip to NewYork with my pet
+Generated constraint set:
+Destination: New York City, New York, United States
+Duration: Customize based on user availability and interest in New York
+Budget: Not explicitly stated, assume flexibility
+Family and Pet Considerations: The trip involves a pet, requiring pet-friendly accommodations and activities.
+Health and Safety: Avoid overly crowded or high-decibel locations due to dislike of loud music.
+Travel Style: Balance between active exploration and cultural immersion; interest in attending sports events if available.
+Accommodations: Seek pet-friendly lodging options; consider options near Central Park for walking and outdoor activities.
+Transportation: Navigate the city using public transit, rideshares, or walking to avoid cumbersome parking.
+Food Preferences: Prioritize dining at restaurants offering sushi, seafood, and spicy cuisine; explore different culinary neighborhoods for varied dining experiences.
+Activities: Include options for photography-friendly locations; engage in creative and physical activities, such as visiting art galleries, walking tours, and possibly attending a local sports game. Avoid music venues or events with loud music.
+Other: Potential to align the travel schedule with any professional seminars or related events happening in New York that match the user's professional interests.
+You: I need plan a trip to NewYork with my parents for 2 days
+AI: Destination: New York, United States
+
+Duration: 2 days
+
+Budget: Not specified, but include dining experiences and potentially some paid activities.
+
+Family and Pet Considerations: Traveling with parents, ensure itinerary accommodates varying interests and energy levels.
+
+Health and Safety: Avoid locations known for loud music. Potential for requiring quiet or serene dining settings or activities.
+
+Travel Style: Blend of social dining, light fitness or walking activities, and cultural experiences suitable for a family.
+
+Accommodations: Not specified, but consider convenient locations for sightseeing and dining.
+
+Transportation: Consider public transportation or taxi/rideshare services for ease of navigating the city with parents.
+
+Food Preferences: Focus on diverse dining experiences including sushi, seafood, and spicy food, with the possibility of visiting renowned or socially vibrant restaurants.
+
+Activities:
+- Include light physical activities that can be enjoyed with family, such as walking tours.
+- Integrate cultural or sports-related experiences that may interest the user and parents, such as photography/creative exhibitions or potentially attending a sports event if available.
+- Allow time for relaxed exploration or a visit to scenic locations suitable for taking photographs or casual enjoyment, like Central Park.
+
+Other: Plan should respect an aversion to loud environments, particularly in restaurant or social settings.
+You: I want to plan a trip to NewYork for 4 days with the family
+AI: Destination: New York, United States
+Duration: 4 days
+Budget: No specific budget provided, consider family-oriented and moderately priced options.
+Family and Pet Considerations: Travel with family, ensure activities suitable for all ages.
+Health and Safety: Considerations for any potential allergies (none provided) or health concerns; make dining reservations to avoid crowded venues.
+Travel Style: Balance between sports events and cultural activities for both personal and family interests.
+Accommodations: Family-friendly accommodations, ideally close to New York attractions; consider options with fitness facilities.
+Transportation: Use of public transportation or rideshares to navigate the city.
+Food Preferences: Restaurants offering sushi, seafood, and spicy foods; explore diverse dining options suitable for a family setting.
+Activities: Attend any available sports events (check schedules for events like boxing or soccer matches), visit cultural landmarks, and explore galleries or photography spots in the city. Include physical activities like walking tours or nearby parks for casual family outings.
+Other: Avoid loud music venues; seek quiet, family-friendly experiences and dining locales. Engage in creative pursuits like visiting art museums or photography exhibitions.
+You: I want to plan a trip to NewYork for 4 days with my parents
+AI: Destination: New York City, United States  
+Duration: 4 days  
+Budget: Unspecified, plan for a mix of activities that cater to different budgets.  
+Family and Pet Considerations: Traveling with parents, therefore focus on age-appropriate and family-friendly activities.  
+Health and Safety: Consider less strenuous options alongside active pursuits to accommodate varied fitness levels among the family members.  
+Travel Style: A mix of social, cultural, and technology-related activities that facilitate both exploration and enrichment.  
+Accommodations: Central location preferred to reduce travel time for varied excursions across the city. Consider multi-bed accommodations for family comfort.  
+Transportation: Utilize public transportation and walking to explore the city efficiently, parking considerations if renting a car.  
+Food Preferences: Include dining experiences at diverse restaurants in New York. Options should include sushi, seafood, and possibly spicy or unique dishes reflecting the city’s multicultural food scene. Encourage social dining to enjoy meals together.  
+Activities: Consider attending a sports event if available (e.g., basketball or a local boxing match). Plan visits to art galleries or photography exhibitions, opportunities for photography in iconic locations, leisurely walking tours of the city, interactive technology exhibits, and possibly attending creative workshops (painting, drawing). Visits to landmarks that suit varied interests and allow light physical activity (e.g., Central Park, the Highline).  
+Other: Avoid loud venues such as certain concerts or clubs and sticky, crowded environments that may distract from the experience. Include participation in or observing events that align with the user's hobbies (e.g., scenic walks or running paths).
+You: I want to plan a trip to newYork with my wife for 3 days 
+AI: Destination: New York, New York, United States
+Duration: 3 days
+Companions: Traveling with spouse
+Budget: Not specified, emphasis on value for experiences
+Family and Pet Considerations: N/A
+Health and Safety: Ensure activities align with fitness interests
+Travel Style: Blends technology, professional and social interests with leisure
+Accommodations: Prefer mid to high-range hotels with comfort and convenience
+Transportation: Utilize public transportation for city exploration
+Food Preferences: Enjoy seafood, sushi, and spicy food; prioritize dining out for social dining experiences
+Activities: 
+- Sports Events: Include possible attendance at notable sports games/events during the stay.
+- Cultural and Creative Interests: Visit art galleries, photography exhibitions, and attend any available creative workshops.
+- Social Activities: Explore alumni networking events if available.
+- Fitness Sessions: Find local running tracks or fitness parks, or consider walking tours that combine sightseeing with light physical activity.
+Other: Avoid locations with loud music; search for relaxing or more subdued evening activities.
+You: I want to plan a trip to NewYork for 4 days with my parents 
+AI: Generated constraint set: 
+
+Destination: New York City, New York, United States
+Duration: 4 days
+Budget: Not specified; assume mid-range budget to balance multiple activities and dining needs for self and parents.
+Family and Pet Considerations: Traveling with parents; ensure activities and accommodation options are suitable for family, potentially accommodating varying levels of mobility or interests.
+Health and Safety: Avoid venues with loud music for a more comfortable experience.
+Travel Style: Blend of cultural, social, and recreational activities.
+Accommodations: Central location preferred for ease of access to various city attractions.
+Transportation: Utilize public transportation, ride-shares, or walking tours to navigate the city.
+Food Preferences: Explore dining scene with a focus on sushi, seafood, and spicy food; choose family-friendly restaurants with a social dining atmosphere.
+Activities: 
+- Explore iconic New York attractions like museums, art galleries, and historical sites.
+- Attend a sports event if possible, like a basketball or baseball game, to align with interest in sports.
+- Participate in family-friendly workshops or classes, such as photography or art to engage with creative hobbies.
+- Outdoor activities such as Central Park walking tour and photography sessions.
+Other: 
+- Schedule visits to quieter or more serene spots for relaxation and casual outdoor enjoyment.
+- Consider pre-booking activities and dining reservations to ensure availability, especially at popular tourist attractions.
+You: Please create a travel itinerary for a solo traveler departing from Jacksonville and heading to Los Angeles for a period of 3 days, specifically from March 25th to March 27th, 2022. The budget for this trip is now set at $2,400.
+You: Please create a travel itinerary for a solo traveler departing from Jacksonville and heading to Los Angeles for a period of 3 days, specifically from March 25th to March 27th, 2022. The budget for this trip is now set at $2,400.
