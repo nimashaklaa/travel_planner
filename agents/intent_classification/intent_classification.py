@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score, classification_report
 import numpy as np
 import pandas as pd
 
+# TODO: need to see why this does not work
 
 # Load JSON files and convert to pandas DataFrame
 def load_data(file_path):

@@ -1,15 +1,31 @@
+import os
+import sys
+
 import pandas as pd
 from pandas import DataFrame
 from typing import Optional
 
 from agents.planner_agent.utils.func import extract_before_parenthesis
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../")))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 # from utils.func import extract_before_parenthesis
 
 
 class Accommodations:
-    def __init__(self, path="agents/planner_agent/database/accommodations/clean_accommodations_2022.csv"):
+    def __init__(self, path=None):
+        if path is None:
+            # 1. Get the folder containing apis.py
+            this_dir = os.path.dirname(os.path.abspath(__file__))
+            # 2. Build the path to the CSV relative to apis.py
+            path = os.path.join(
+                this_dir,
+                "..", "..",  # up two levels: from tools/flights/ to planner_agent/
+                "database",
+                "accommodations",
+                "clean_accommodations_2022.csv"
+            )
         self.path = path
         self.data = pd.read_csv(self.path).dropna()[['NAME','price','room type', 'house_rules', 'minimum nights', 'maximum occupancy', 'review rate number', 'city']]
         print("Accommodations loaded.")

@@ -9,11 +9,23 @@ import numpy as np
 
 # This tool refers to the "DistanceMatrix" in the paper. Considering this data obtained from Google API, we consistently use this name in the code. 
 # Please be assured that this will not influence the experiment results shown in the paper. 
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../")))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class GoogleDistanceMatrix:
     def __init__(self, subscription_key: str="") -> None:
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+        # 2. Build the path to the CSV relative to apis.py
+        path = os.path.join(
+            this_dir,
+            "..", "..",  # up two levels: from tools/flights/ to planner_agent/
+            "database",
+            "googleDistanceMatrix",
+            "distance.csv"
+        )
         self.gplaces_api_key: str = subscription_key
-        self.data =  pd.read_csv('database/googleDistanceMatrix/distance.csv')
+        # self.data =  pd.read_csv('database/googleDistanceMatrix/distance.csv')
+        self.data = pd.read_csv(path)
         print("GoogleDistanceMatrix loaded.")
 
     def run(self, origin, destination, mode='driving'):

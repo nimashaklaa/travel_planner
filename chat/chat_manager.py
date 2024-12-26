@@ -35,6 +35,7 @@ def handle_chat(chat_history_path):
                 print("AI:", constraint_set)
                 planner = TravelPlanner()
                 planner.run(constraint_set)
+
             # ai_response = get_response(user_message)
             # print("AI:", ai_response)
 

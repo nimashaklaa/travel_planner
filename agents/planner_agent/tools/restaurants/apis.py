@@ -1,10 +1,25 @@
+import os
+import sys
+
 import pandas as pd
 from pandas import DataFrame
 from typing import Optional
 from agents.planner_agent.utils.func import extract_before_parenthesis
 
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../")))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 class Restaurants:
-    def __init__(self, path="agents/planner_agent/database/restaurants/clean_restaurant_2022.csv"):
+    def __init__(self, path=None):
+        if path is None:
+            this_dir = os.path.dirname(os.path.abspath(__file__))
+            path = os.path.join(
+                this_dir,
+                "..", "..",
+                "database",
+                "restaurants",
+                "clean_restaurant_2022.csv"
+            )
         self.path = path
         self.data = pd.read_csv(self.path).dropna()[['Name','Average Cost','Cuisines','Aggregate Rating','City']]
         print("Restaurants loaded.")

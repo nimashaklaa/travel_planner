@@ -1,8 +1,14 @@
 import sys
 import os
+
+from dotenv import load_dotenv
+
+from agents.tool_agent.prompts import planner_agent_prompt, react_planner_agent_prompt, \
+    react_reflect_planner_agent_prompt, REFLECTION_HEADER, reflect_prompt
+
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "..")))
 from langchain.prompts import PromptTemplate
-from agents.prompts import planner_agent_prompt, cot_planner_agent_prompt, react_planner_agent_prompt,reflect_prompt,react_reflect_planner_agent_prompt, REFLECTION_HEADER
+
 from langchain.chat_models import ChatOpenAI
 from langchain.llms.base import BaseLLM
 from langchain.schema import (
@@ -10,7 +16,7 @@ from langchain.schema import (
     HumanMessage,
     SystemMessage
 )
-from env import ReactEnv,ReactReflectEnv
+from agents.planner_agent.tools.planner.env import ReactEnv, ReactReflectEnv
 import tiktoken
 import re
 import openai
@@ -21,8 +27,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import argparse
 
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
-GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
 def catch_openai_api_error():

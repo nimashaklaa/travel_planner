@@ -1,7 +1,23 @@
+import os
+import sys
+
 from pandas import DataFrame
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../../")))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class Cities:
-    def __init__(self ,path="agents/planner_agent/database/background/citySet_with_states.txt") -> None:
+    def __init__(self ,path=None) -> None:
+        if path is None:
+            # 1. Get the folder containing apis.py
+            this_dir = os.path.dirname(os.path.abspath(__file__))
+            # 2. Build the path to the CSV relative to apis.py
+            path = os.path.join(
+                this_dir,
+                "..", "..",  # up two levels: from tools/flights/ to planner_agent/
+                "database",
+                "background",
+                "citySet_with_states.txt"
+            )
         self.path = path
         self.load_data()
         print("Cities loaded.")
