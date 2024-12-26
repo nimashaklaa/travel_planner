@@ -16,7 +16,7 @@ from langchain.schema import (
     HumanMessage,
     SystemMessage
 )
-from prompts import zeroshot_react_agent_prompt
+from agents.tool_agent.prompts import zeroshot_react_agent_prompt
 import sys
 import json
 import openai
@@ -648,8 +648,6 @@ def generate_one_plan(user_query: str):
 
 
 if __name__ == '__main__':
-
-    print()
 
     user_query = "I want to plan a weekend trip to NewYork for 2 days"
 

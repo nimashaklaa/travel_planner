@@ -3,6 +3,7 @@ from openai import OpenAI
 
 from agents.context_agent.context_agent import generate_constraint_set
 from agents.planner_agent.planner_fun import TravelPlanner
+from agents.tool_agent.tool_agent import generate_one_plan
 from db.db_manager import save_profile_to_db
 from nlp.nlp_resources import get_nlp_instance
 from nlp.topic_categorizer import categorize_topics_with_llm
@@ -22,6 +23,8 @@ def get_response(prompt):
 
 
 def handle_chat(chat_history_path):
+    print('trying to fetch', chat_history_path)
+    chat_history_path = 'D:/semester 7/FYP/chat_history.txt'
     with open(chat_history_path, "a") as chat_file:
         print("Chatbot is ready to talk! Type 'quit' to exit.")
         while True:
@@ -32,9 +35,11 @@ def handle_chat(chat_history_path):
             if "plan a trip" in user_message.lower():
 
                 constraint_set = generate_constraint_set(user_message)
-                print("AI:", constraint_set)
-                planner = TravelPlanner()
-                planner.run(constraint_set)
+
+                # planner = TravelPlanner()
+                # planner.run(constraint_set)
+                plan, scratchpad, action_log = generate_one_plan(constraint_set)
+                print("AI:", constraint_set, plan)
 
             # ai_response = get_response(user_message)
             # print("AI:", ai_response)
