@@ -251,3 +251,81 @@ Other:
 - Consider pre-booking activities and dining reservations to ensure availability, especially at popular tourist attractions.
 You: Please create a travel itinerary for a solo traveler departing from Jacksonville and heading to Los Angeles for a period of 3 days, specifically from March 25th to March 27th, 2022. The budget for this trip is now set at $2,400.
 You: Please create a travel itinerary for a solo traveler departing from Jacksonville and heading to Los Angeles for a period of 3 days, specifically from March 25th to March 27th, 2022. The budget for this trip is now set at $2,400.
+You: I need to plan a trip to new york for 4 days
+AI: Destination: New York City, New York, United States
+Duration: 4 days
+Budget: The user has not specified a budget, so moderate to flexible spending options should be recommended.
+Health and Safety: Ensure accommodations and venues are ideally away from loud environments due to a dislike for loud music.
+Travel Style: Social and activity-focused, blending professional development with leisure and sports experiences.
+Accommodation: Mid-range hotels close to major landmarks and within walking distance to notable attractions to facilitate casual outdoor activities.
+Transportation: Recommend the use of public transit or walking as a means of transportation within the city.
+Food Preferences: Suggest dining experiences at sushi and seafood restaurants, also a focus on spicy cuisine options at popular local spots.
+Activities:
+
+1. Attend a sports event if the timing aligns, such as a basketball or hockey game at Madison Square Garden.
+2. Explore photography opportunities at iconic locations like Central Park, Times Square, and the Brooklyn Bridge.
+3. Visit art galleries or exhibitions to engage with their interest in painting and creative arts.
+4. Attend a professional development seminar or networking event if available.
+5. Participate in a running or fitness class in a park or local gym.
+
+Other: Include recommendations for casual social gatherings or community events that could align with their networking desires.
+You: I need to plan a trip to US for 3 days with my parents and my pet 
+AI: Generated constraint set: 
+
+Destination: United States (specific location not defined; consider cultural or sports event destinations)
+Duration: 3 days
+
+Travel Group:
+- Traveling with parents and a pet, which may require pet-friendly accommodations and activities.
+
+Interests & Activities:
+- Sports Events: Consider including major sports events or locations with significant sports history or activities.
+- Social & Dining Preferences: Include dining at restaurants that offer sushi, seafood, and spicy food, with a focus on social settings.
+- Physical Activities: Opportunities for workouts, running, badminton, and casual outdoor activities like walking.
+- Creative Activities: Consider destinations offering photography-friendly spots, painting classes, or art exhibits.
+
+Dislikes:
+- Avoid venues with loud music.
+- Avoid sticky environments or potentially uncomfortable settings.
+
+Transportation:
+- Ensure travel accommodations are pet-friendly, possibly including rental vehicles allowing pets.
+
+Accommodations:
+- Choose pet-friendly accommodation options.
+- Consider proximity to sports venues or outdoor activities.
+
+Food & Dining:
+- Plan for restaurant dining experiences that align with the user's preference for sushi, seafood, and spicy food.
+
+Other Considerations:
+- Include options for professional development or technology-related activities if these align with the user’s interests and travel context.
+- Consider opportunities to engage in social or alumni-related events or meet-ups if relevant to the destination.
+
+Overall Experience:
+- Blend of sports exposure, social dining experiences, family-friendly activities, and pet inclusivity.
+You: I want to plan a trip to US with my wife for 2 days
+AI: Destination: United States
+Duration: 2 days
+Budget: Define budget parameters based on typical costs for food, accommodation, transportation, and activities in the chosen city.
+Family and Pet Considerations: Traveling with spouse; no mention of children or pets.
+Health and Safety: Ensure availability of healthy dining options to accommodate fitness lifestyle.
+Travel Style: Blend of leisure and activity-focused itinerary, incorporating user interests and aversions.
+Accommodations: Prefer accommodations in quieter locations to avoid loud music; consider amenities for relaxation and peaceful stays.
+Transportation: Use local transportation options to maximize time and convenience.
+Food Preferences: Prioritize dining experiences with sushi, seafood, and spicy food options available, seeking restaurants known for these cuisines. Avoid overly loud venues.
+Activities: Include opportunities for casual outdoor activities, such as walking tours or photo walks, in addition to bustling experiences like attending a local sports event if available in the area.
+Other: Integrate cultural or creative experiences, such as visiting museums or art galleries for photography inspiration, or attending a workshop related to the user's creative interests.
+You: I need to plan a trip to NewYork with my family next 2 days
+AI: ***** Generated constraint set *****
+
+Destination: New York City, New York, United States
+Duration: 2 days
+Family and Pet Considerations: Traveling with family, so accommodations and activities should be family-friendly.
+Health and Safety: Ensure options for travel insurance if needed. Avoid venues with loud music due to the user's dislike.
+Travel Style: Enjoys mixing social and professional activities; may prefer a blend of cultural and leisure experiences.
+Accommodations: Choose accommodations that offer family-friendly amenities and are quiet.
+Transportation: Consider public transport options for efficient movement around the city.
+Food Preferences: Prefer dining at restaurants with a variety of sushi, seafood, and spicy food options; social dining experiences are important.
+Activities: Include opportunities for casual outdoor activities, such as walking in Central Park, as well as engaging in creative pursuits like photography or visiting art galleries. Include options for attending any notable sports events happening during the visit, if applicable.
+Other: Ensure a balance between engaging in family-friendly activities and time for leisure or creative pursuits.

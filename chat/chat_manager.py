@@ -35,10 +35,7 @@ def handle_chat(chat_history_path):
             if "plan a trip" in user_message.lower():
 
                 constraint_set = generate_constraint_set(user_message)
-
-                # planner = TravelPlanner()
-                # planner.run(constraint_set)
-                plan, scratchpad, action_log = generate_one_plan(constraint_set)
+                plan, scratchpad, action_log = generate_one_plan( user_message)
                 print("AI:", constraint_set, plan)
 
             # ai_response = get_response(user_message)
