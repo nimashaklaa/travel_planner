@@ -33,7 +33,7 @@ def handle_chat(chat_history_path):
                 break
 
             if "plan a trip" in user_message.lower():
-
+                # TODO: add a calendar event checking check
                 constraint_set = generate_constraint_set(user_message)
                 plan, scratchpad, action_log = generate_one_plan( user_message)
                 print("AI:", constraint_set, plan)
@@ -43,7 +43,7 @@ def handle_chat(chat_history_path):
 
             # Write messages to file
             chat_file.write(f"You: {user_message}\n")
-            # TODO: chat should output the plan
+            # TODO: chat should check whether the plan is correct and if there is any missmatch talk with the user
             chat_file.write(f"AI: {constraint_set}\n")
 
     # if chat_active:
