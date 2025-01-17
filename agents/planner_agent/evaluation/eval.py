@@ -248,7 +248,9 @@ if __name__ == '__main__':
     # parser.add_argument("--evaluation_file_path", type=str, default="./")
     # args = parser.parse_args()
 
-    scores, detailed_scores = eval_score("validation", file_path=args.evaluation_file_path)
+    evaluation_file_path = "./"
+
+    scores, detailed_scores = eval_score("validation", file_path=evaluation_file_path)
 
     for key in scores:
         print(f"{key}: {scores[key] * 100}%")

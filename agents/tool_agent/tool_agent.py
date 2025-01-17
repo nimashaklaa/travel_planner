@@ -67,6 +67,55 @@ def catch_openai_api_error():
         print("API error:", error)
 
 
+def read_collected_data(file_path: str = 'D:/semester 7/FYP/agents/generated_plans/collected_data.txt'):
+    """
+    Read collected data from a text file.
+
+    Parameters:
+    - file_path (str): The file path from where the data will be read.
+
+    Behavior:
+    - Checks if the file exists before attempting to read.
+    - Parses the content and returns it in a structured format.
+    - Handles errors gracefully.
+    """
+    try:
+        # 📂 Ensure the file exists
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"❌ File not found at {file_path}. Please ensure the file exists.")
+
+        # 📖 Read data from the file
+        collected_data = []
+        with open(file_path, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+
+        # 📊 Parse the contents
+        current_item = {}
+        for line in lines:
+            line = line.strip()
+            if line.startswith("Description:"):
+                current_item['Description'] = line.replace("Description: ", "")
+            elif line.startswith("Content:"):
+                current_item['Content'] = ""
+            elif line == "-" * 50:
+                if 'Description' in current_item and 'Content' in current_item:
+                    collected_data.append(current_item)
+                current_item = {}
+            else:
+                if 'Content' in current_item:
+                    current_item['Content'] += f"{line}\n"
+
+        print(f"✅ Data successfully read from {file_path}")
+        return collected_data
+
+    except FileNotFoundError as fnf_error:
+        print(fnf_error)
+    except PermissionError:
+        print(f"❌ Permission denied: Cannot read from {file_path}. Please check file permissions.")
+    except Exception as e:
+        print(f"❌ Error reading data: {e}")
+
+
 class ReactAgent:
     def __init__(self,
                  args,
@@ -92,6 +141,7 @@ class ReactAgent:
             self.agent_prompt = zeroshot_react_agent_prompt
 
         self.json_log = []
+        self.collected_data = []  #todo: I updated this part for information retrival
 
         self.current_observation = ''
         self.current_data = None
@@ -162,6 +212,13 @@ class ReactAgent:
             self.step()
 
         return self.answer, self.scratchpad, self.json_log
+
+    def store_data(self, description: str, content: str):  # todo: I updated this
+        """Store retrieved data in the desired format."""
+        self.collected_data.append({
+            'Description': description,
+            'Content': content
+        })
 
     def step(self) -> None:
 
@@ -242,6 +299,11 @@ class ReactAgent:
 
             if action_type == 'FlightSearch':
                 try:
+                    details = action_arg.split(', ')
+                    departure_city = details[0]
+                    destination_city = details[1]
+                    travel_date = details[2]
+
                     if validate_date_format(action_arg.split(', ')[2]) and validate_city_format(
                             action_arg.split(', ')[0], self.city_set) and validate_city_format(
                             action_arg.split(', ')[1], self.city_set):
@@ -251,6 +313,14 @@ class ReactAgent:
                                                                       action_arg.split(', ')[1],
                                                                       action_arg.split(', ')[2])
                         self.current_observation = str(to_string(self.current_data))
+
+                        # Ensure the data is converted to a tabular format
+                        flight_details = to_string(self.current_data).strip()
+
+                        # Store the structured flight details
+                        description = f"Flight from {departure_city} to {destination_city} on {travel_date}"
+                        content = f"Flight Number Price DepTime ArrTime ActualElapsedTime FlightDate OriginCityName DestCityName Distance\n{flight_details}"
+                        self.store_data(description, content)
                         self.scratchpad += self.current_observation
                         self.__reset_record()
                         self.json_log[-1]['state'] = f'Successful'
@@ -282,6 +352,8 @@ class ReactAgent:
                                                                   'Masked due to limited length. Make sure the data has been written in Notebook.')
                         self.current_data = self.tools['attractions'].run(action_arg)
                         self.current_observation = to_string(self.current_data).strip('\n').strip()
+                        content = to_string(self.current_data).strip()
+                        self.store_data(f'Attractions in {action_arg}', content)
                         self.scratchpad += self.current_observation
                         self.__reset_record()
                         self.json_log[-1]['state'] = f'Successful'
@@ -304,6 +376,8 @@ class ReactAgent:
                         self.scratchpad = self.scratchpad.replace(to_string(self.current_data).strip().strip(),
                                                                   'Masked due to limited length. Make sure the data has been written in Notebook.')
                         self.current_data = self.tools['accommodations'].run(action_arg)
+                        content = to_string(self.current_data).strip()
+                        self.store_data(f'Accommodations in {action_arg}', content)
                         self.current_observation = to_string(self.current_data).strip('\n').strip()
                         self.scratchpad += self.current_observation
                         self.__reset_record()
@@ -327,6 +401,8 @@ class ReactAgent:
                         self.scratchpad = self.scratchpad.replace(to_string(self.current_data).strip().strip(),
                                                                   'Masked due to limited length. Make sure the data has been written in Notebook.')
                         self.current_data = self.tools['restaurants'].run(action_arg)
+                        content = to_string(self.current_data).strip()
+                        self.store_data(f'Restaurants in {action_arg}', content)
                         self.current_observation = to_string(self.current_data).strip()
                         self.scratchpad += self.current_observation
                         self.__reset_record()
@@ -372,12 +448,26 @@ class ReactAgent:
             elif action_type == 'GoogleDistanceMatrix':
 
                 try:
+                    # Extract origin, destination, and mode
+                    details = action_arg.split(', ')
+                    origin = details[0]
+                    destination = details[1]
+                    mode = details[2]
+
                     self.scratchpad = self.scratchpad.replace(to_string(self.current_data).strip(),
                                                               'Masked due to limited length. Make sure the data has been written in Notebook.')
                     self.current_data = self.tools['googleDistanceMatrix'].run(action_arg.split(', ')[0],
                                                                                action_arg.split(', ')[1],
                                                                                action_arg.split(', ')[2])
                     self.current_observation = to_string(self.current_data)
+
+                    # Format the Content based on mode
+                    content = f"{mode}, from {origin} to {destination}, {self.current_observation.strip()}"
+                    description = f"{mode.capitalize()} from {origin} to {destination}"
+
+                    # Store the retrieved data
+                    self.store_data(description, content)
+
                     self.scratchpad += self.current_observation
                     self.__reset_record()
                     self.json_log[-1]['state'] = f'Successful'
@@ -515,6 +605,32 @@ class ReactAgent:
             city_set.append(unit)
         return city_set
 
+    def print_collected_data(self):
+        """Print all collected data in the desired format."""
+        import json
+        print(json.dumps(self.collected_data, indent=4))
+
+    def save_collected_data(self, file_path: str = 'D:/semester 7/FYP/agents/generated_plans/collected_data.txt'):
+        """Save all collected data into a text file."""
+        base_directory = 'D:/semester 7/FYP/agents/generated_plans'
+        try:
+            directory = os.path.dirname('D:/semester 7/FYP/agents/generated_plans/collected_data.txt')
+            print(directory)
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+                print(f"📂 Directory created at {directory}")
+                # 🗂️ Generate a unique file name with timestamp
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            file_path = os.path.join(base_directory, f'collected_data_{timestamp}.txt')
+            # Write data to the file
+            with open(file_path, "w", encoding="utf-8") as file:
+                for item in self.collected_data:
+                    file.write(f"Description: {item['Description']}")
+                    file.write(f"Content:{item['Content']}")
+            print(f"✅ Data successfully saved to {file_path}")
+        except Exception as e:
+            print(f"❌ Error saving data: {e}")
+
 
 ### String Stuff ###
 gpt2_enc = tiktoken.encoding_for_model("text-davinci-003")
@@ -644,6 +760,10 @@ def generate_one_plan(user_query: str):
     agent = ReactAgent(None, tools=tools_list, max_steps=30, react_llm_name=model_name,
                        planner_llm_name=model_name)
     planner_results, scratchpad, action_log = agent.run(user_query)
+    agent.print_collected_data()
+    agent.save_collected_data('D:/semester 7/FYP/agents/generated_plans/collected_data.txt')
+    data = read_collected_data('D:/semester 7/FYP/agents/generated_plans/collected_data.txt')
+    print(data)
     return planner_results, scratchpad, action_log
 
 

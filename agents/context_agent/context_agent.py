@@ -16,7 +16,9 @@ def read_user_profile(file_path):
         return None
 
 # Read user profile text from a file
-user_profile_txt = read_user_profile('user_profile.txt')
+# ToDO: Need to uncomment this
+# user_profile_txt = read_user_profile('user_profile.txt')
+user_profile_txt="She is a 25-year-old data analyst who loves painting. She is single and lives with her best friend. She holds a degree in statistics. She enjoys attending art galleries and has a small studio in her apartment where she paints. She also enjoys cooking Italian dishes."
 
 # Check if user_profile_txt is not None
 if user_profile_txt is None:

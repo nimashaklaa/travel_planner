@@ -22,29 +22,43 @@ def get_response(prompt):
     return response_content
 
 
-def handle_chat(chat_history_path):
+def handle_chat(chat_history_path, user_query):
     print('trying to fetch', chat_history_path)
     chat_history_path = 'D:/semester 7/FYP/chat_history.txt'
     with open(chat_history_path, "a") as chat_file:
         print("Chatbot is ready to talk! Type 'quit' to exit.")
-        while True:
-            user_message = input("You: ")
-            if user_message.lower() == 'quit':
-                break
+        for user_message in user_query:
+            print("You:", user_message)
 
-            if "plan a trip" in user_message.lower():
-                # TODO: add a calendar event checking check
-                constraint_set = generate_constraint_set(user_message)
-                plan, scratchpad, action_log = generate_one_plan( user_message)
-                print("AI:", constraint_set, plan)
+            # Check if user_message has special instructions (optional)
+            # if "plan a trip" in user_message.lower():
+            # TODO: add a calendar event checking check
 
-            # ai_response = get_response(user_message)
-            # print("AI:", ai_response)
+            # Generate plan for the user message
+            plan, scratchpad, action_log = generate_one_plan(user_message)
+            print("AI:", plan)
 
             # Write messages to file
             chat_file.write(f"You: {user_message}\n")
-            # TODO: chat should check whether the plan is correct and if there is any missmatch talk with the user
-            chat_file.write(f"AI: {constraint_set}\n")
+            chat_file.write(f"AI: {plan}\n")
+        # while True:
+        #     user_message = input("You: ")
+        #     if user_message.lower() == 'quit':
+        #         break
+        #
+        #     # if "plan a trip" in user_message.lower():
+        #         # TODO: add a calendar event checking check
+        #     # constraint_set = generate_constraint_set(user_message)
+        #     plan, scratchpad, action_log = generate_one_plan( user_message)
+        #     print("AI:",plan)
+        #
+        #     # ai_response = get_response(user_message)
+        #     # print("AI:", ai_response)
+        #
+        #     # Write messages to file
+        #     chat_file.write(f"You: {user_message}\n")
+        #     # TODO: chat should check whether the plan is correct and if there is any missmatch talk with the user
+        #     chat_file.write(f"AI: {plan}\n")
 
     # if chat_active:
         # Process chat history to create user_profile
