@@ -56,6 +56,141 @@ Each action only calls one function once. Do not add any description in the acti
 
 Query: {query}{scratchpad}"""
 
+# ZEROSHOT_FEEDBACK_INSTRUCTION = """You are an advanced feedback agent that improves an existing travel plan based on user requests. Your goal is to refine the plan while preserving relevant information.
+#
+# ## Process:
+# - Identify inconsistencies, missing details, or unwanted elements based on user feedback.
+# - Call only the necessary tools to refine the plan. Avoid redundant requests.
+# - Ensure the modifications align with the user’s preferences.
+# - All modified details should be written to the Notebook.
+#
+# ## Action Types:
+# (1) FlightSearch[Departure City, Destination City, Date]:
+# - If a new or modified flight is requested, search for flights accordingly.
+#
+# (2) GoogleDistanceMatrix[Origin, Destination, Mode]:
+# - If changes to transportation are requested, fetch updated travel information.
+#
+# (3) AccommodationSearch[City]:
+# - If the user wants to change their hotel, search for a different accommodation.
+#
+# (4) RestaurantSearch[City]:
+# - If the user wants a different cuisine or budget, fetch new restaurant recommendations.
+#
+# (5) AttractionSearch[City]:
+# - If new attractions are requested or existing ones should be removed, update the sightseeing list.
+#
+# (6) NotebookWrite[Short Description]:
+# - Use this after making changes to update the Notebook with new travel details.
+#
+# (7) Planner[Updated Query]:
+# - Once modifications are complete, use this tool to finalize the revised plan.
+#
+# ## Output:
+# Thought: Reason through the requested change.
+# Action: Select the appropriate tool(s) to fetch necessary updates.
+# Observation: Evaluate whether the change successfully resolves the issue.
+# NotebookWrite: Store the revised plan.
+#
+# ## Example Flow:
+# User Request: "Change my hotel to a budget option and add a visit to the Louvre in Paris."
+# Thought: The user wants a cheaper hotel and an additional attraction.
+# Action: AccommodationSearch[Paris]
+# Observation: Found affordable hotels: Hotel A, Hotel B.
+# NotebookWrite[Updated budget accommodation in Paris]
+#
+# Action: AttractionSearch[Paris]
+# Observation: Added Louvre Museum to itinerary.
+# NotebookWrite[Updated attractions in Paris]
+#
+# Action: Planner[Generate final itinerary with updated changes]
+#
+# ## User Feedback:
+# {query}
+# Current Plan:
+# {scratchpad}
+# """
+ZEROSHOT_FEEDBACK_INSTRUCTION = """You are an advanced AI travel assistant that refines and improves an existing travel plan based on user feedback. Your goal is to modify the plan accurately while ensuring all necessary changes are applied.
+
+---
+
+## **Process:**
+1. **Retrieve the existing trip details from the Notebook before making any modifications.**
+2. **Identify missing or incomplete details** (e.g., transportation origin, destination, mode).
+3. **Apply only the necessary changes requested by the user** while preserving other trip details.
+4. **Store all updates in the Notebook before calling `Planner[Updated Query]` to finalize the itinerary.**
+5. **Ensure every step logically follows the previous one and avoids redundant actions.**
+
+---
+
+## **Action Types:**
+(1) **FlightSearch[Departure City, Destination City, Date]**  
+- Use this when a **new or modified flight** is requested.
+- Example: `FlightSearch[New York, London, 2024-06-15]`
+
+(2) **GoogleDistanceMatrix[Origin, Destination, Mode]**  
+- Use this when ground **transportation needs to be added or modified**.
+- Example: `GoogleDistanceMatrix[New York, Washington DC, self-driving]`
+
+(3) **AccommodationSearch[City]**  
+- If the user requests a **different hotel** (cheaper/luxury), update it.
+- Example: `AccommodationSearch[Paris]`
+
+(4) **RestaurantSearch[City]**  
+- If the user asks for **specific dining options**, modify it.
+- Example: `RestaurantSearch[Tokyo]`
+
+(5) **AttractionSearch[City]**  
+- If new attractions are requested, update sightseeing lists.
+- Example: `AttractionSearch[London]`
+
+(6) **NotebookWrite[Short Description]**  
+- **Always store updates before finalizing the plan.**
+- Example: `NotebookWrite[Added budget hotel in Paris]`
+
+(7) **Planner[Updated Query]**  
+- **Only use this after all details are gathered.**
+- Example: `Planner[Update the plan with added flights and attractions]`
+
+---
+
+## **Handling Missing Context**
+If the user provides an incomplete request like:
+> "_I need to add transportation to this._"
+
+### **Step 1: Retrieve Previous Trip Details**
+- **Check if a previous trip exists in the Notebook.**
+- **If origin and destination are missing, retrieve them from the saved itinerary.**
+- **If transportation details are missing, ask the user for their preferred mode of transport.**
+- **Only proceed when all required details are available.**
+
+---
+
+## **Example Flow: Handling "Add Transportation" Request**
+### **User Request:**  
+_"I need to add transportation to this."_
+
+### **Agent Response (Using Past Context)**
+---
+
+## **Rules & Constraints:**
+1. **Always check for missing details before taking action.**
+2. **Do not assume trip details—retrieve them from the Notebook.**
+3. **Use NotebookWrite before modifying the plan.**
+4. **Ensure the updated plan retains all previous trip details.**
+5. **Avoid redundant actions—modify only the necessary parts.**
+6. **Only call `Planner[Updated Query]` after collecting all necessary details.**
+
+---
+
+## **User Feedback:**
+{query}
+
+## **Current Plan:**
+{scratchpad}
+"""
+
+
 ZEROSHOT_REACT_INSTRUCTION_1 = """Collect information for a query plan using interleaving 'Thought', 'Action', and 'Observation' steps. Ensure you gather valid information related to transportation, dining, attractions, and accommodation. All information should be written in Notebook.
 
 'Thought' can reason about the current situation, and 'Action' can have 7 different types (Planner is excluded in this task):
@@ -114,6 +249,11 @@ Query: {query}{scratchpad}"""
 zeroshot_react_agent_prompt = PromptTemplate(
                         input_variables=["query", "scratchpad"],
                         template=ZEROSHOT_REACT_INSTRUCTION,
+                        )
+
+zeroshot_feedback_agent_prompt = PromptTemplate(
+                        input_variables=["query", "scratchpad"],
+                        template=ZEROSHOT_FEEDBACK_INSTRUCTION,
                         )
 
 PLANNER_INSTRUCTION = """You are a proficient planner. Based on the provided information and query, please give me a detailed plan, including specifics such as flight numbers (e.g., F0123456), restaurant names, and accommodation names. Note that all the information in your plan should be derived from the provided data. You must adhere to the format given in the example. Additionally, all details should align with commonsense. The symbol '-' indicates that information is unnecessary. For example, in the provided sample, you do not need to plan after returning to the departure city. When you travel to two cities in one day, you should note it in the 'Current City' section as in the example (i.e., from A to B).
