@@ -1,3 +1,4 @@
+import json
 import re, string, os, sys
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../planner_agent")))
@@ -650,6 +651,58 @@ def to_string(data) -> str:
     else:
         return str(None)
 
+
+def parse_travel_plan(travel_plan: str) -> dict:
+    """
+    Parses the travel plan string into a structured dictionary for easy updates.
+    Handles multi-line values correctly.
+    """
+    parsed_plan = {}
+    current_day = None
+
+    for line in travel_plan.strip().split("\n"):
+        line = line.strip()
+
+        # Identify Day headers
+        if line.lower().startswith("day "):
+            current_day = line.rstrip(":")  # Ensure no trailing colon
+            parsed_plan[current_day] = {}  # Initialize dictionary for this day
+
+        # Parse key-value pairs
+        elif ":" in line and current_day:
+            key, value = line.split(":", 1)
+            parsed_plan[current_day][key.strip()] = value.strip()
+
+        # Handle multi-line values (continuation of previous value)
+        elif current_day and line:
+            last_key = list(parsed_plan[current_day].keys())[-1]  # Get last added key
+            parsed_plan[current_day][last_key] += " " + line.strip()  # Append to last key
+
+    return parsed_plan
+
+
+def update_travel_plan(original_plan: str, updates: dict) -> str:
+    """
+    Updates the travel plan dynamically based on user feedback.
+    """
+    parsed_plan = parse_travel_plan(original_plan)
+
+    for day, changes in updates.items():
+        if day in parsed_plan:
+            for key, value in changes.items():
+                # Only update if the new value is NOT "-" and the field is not originally "-"
+                if value != "-":
+                    parsed_plan[day][key] = value
+
+                    # Convert back to string format
+    updated_plan = ""
+    for day, details in parsed_plan.items():
+        updated_plan += f"\n{day}:\n"
+        for key, value in details.items():
+            updated_plan += f"{key}: {value}\n"
+
+    return updated_plan.strip()
+
 def merge_updated_plan(original_plan, updated_details):
     """
     Merges the updated details into the original plan while keeping unchanged sections intact.
@@ -687,12 +740,27 @@ def merge_updated_plan(original_plan, updated_details):
             if not current_day or current_day not in updated_map:  # Keep unchanged parts
                 merged_plan.append(line)
 
-    # If there are any remaining updated sections (newly added days), append them
+    # If there are any remaining-updated sections (newly added days), append them
     for remaining_day, details in updated_map.items():
         merged_plan.append(remaining_day)
         merged_plan.extend(details)
 
     return "\n".join(merged_plan)
+
+def convert_str_to_dict(update_str: str) -> dict:
+    """
+    Converts a properly formatted string into a dictionary.
+    Assumes the input is in JSON format or key-value pairs separated by colons.
+    """
+    try:
+        return json.loads(update_str)
+    except json.JSONDecodeError:
+        updates = {}
+        for line in update_str.strip().split("\n"):
+            if ":" in line:
+                key, value = line.split(":", 1)
+                updates[key.strip()] = value.strip()
+        return updates
 
 def extract_trip_details(original_plan):
     """
@@ -743,12 +811,13 @@ def extract_trip_details(original_plan):
 def generate_updated_plan(user_query_: str, original_plan: str):
     tools_list = ["notebook", "flights", "attractions", "accommodations", "restaurants", "googleDistanceMatrix",
                   "planner", "cities"]
-    model_name = 'gpt-4-1106-preview'
+    # model_name = 'gpt-4-1106-preview'
+    model_name = 'gpt-4o'
     agent = FeedbackAgent(None, tools=tools_list, max_steps=30, react_llm_name=model_name,
                           planner_llm_name=model_name)
 
     # Step 1: Retrieve past trip details if available
-    past_trip = extract_trip_details(plan)
+    past_trip = extract_trip_details(original_plan)
 
     # Step 2: Ask user what they want to modify
     print("\n🔍 What do you want to update?")
@@ -793,47 +862,32 @@ def generate_updated_plan(user_query_: str, original_plan: str):
 
     # Step 7: Run the agent with the updates
     if not update_queries:
-        print("\n✅ No updates made. Keeping the original plan.")
         return original_plan, None, None
 
     user_query_ += " " + " ".join(update_queries)
     planner_results, scratch_pad, actions_log = agent.run(user_query_, original_plan)
 
-    # Step 8: Merge the updated details with the original plan
-    final_plan = merge_updated_plan(original_plan, planner_results)
+    # ==============================================================
+    # Step 8: Ensure planner_results is properly converted to a dictionary
+    planner_results = parse_travel_plan(planner_results)
+
+    if isinstance(planner_results, str):
+        try:
+            updated_plan = json.loads(planner_results)  # Try JSON parsing
+        except json.JSONDecodeError:
+            updated_plan = convert_str_to_dict(planner_results)  # Fallback parsing
+    else:
+        updated_plan = planner_results  # If it's already a dict, use it as is
+
+    if not isinstance(updated_plan, dict):
+        print("⚠️ Error: Updated plan is not a valid dictionary!")
+        return original_plan, scratch_pad, actions_log
+
+    
+    final_plan = update_travel_plan(original_plan, updated_plan)
 
     return final_plan, scratch_pad, actions_log
 
-
-# def generate_updated_plan(user_query_: str,original_plan:str):
-#     tools_list = ["notebook", "flights", "attractions", "accommodations", "restaurants", "googleDistanceMatrix",
-#                   "planner", "cities"]
-#     model_name = 'gpt-4-1106-preview'
-#     agent = FeedbackAgent(None, tools=tools_list, max_steps=30, react_llm_name=model_name,
-#                        planner_llm_name=model_name)
-#
-#     # Step1: check for missing trip details
-#     print("\n🔍 Checking for previous trip details in Notebook...")
-#
-#     # Step 2: Retrieve trip info (If missing, ask user)
-#     origin = input("Enter departure city (Leave blank if using previous city): ").strip() or "New York"
-#     destination = input("Enter destination city (Leave blank if using previous city): ").strip() or "hotel"
-#     mode = input("Enter mode of transportation (self-driving/taxi/flight): ").strip()
-#
-#     # Step 3: Validate inputs before calling APIs
-#     if not origin or not destination or not mode:
-#         print("⚠️ Missing details! Cannot proceed with transportation update.")
-#         return original_plan, None, None  # Keep the old plan if details are missing
-#
-#     # Step 4: Call the correct API based on mode
-#     if mode.lower() == "flight":
-#         date = input("Enter travel date (YYYY-MM-DD): ").strip()
-#         user_query_ += f" FlightSearch[{origin}, {destination}, {date}]"
-#     else:
-#         user_query_ += f" GoogleDistanceMatrix[{origin}, {destination}, {mode}]"
-#     planner_results, scratch_pad, actions_log = agent.run(user_query_,original_plan)
-#
-#     return planner_results, scratch_pad, actions_log
 
 if __name__ == '__main__':
 

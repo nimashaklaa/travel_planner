@@ -130,6 +130,7 @@ class ReactAgent:
                  city_file_path='../database/background/citySet.txt'
                  ) -> None:
 
+        self.query = None
         self.answer = ''
         self.max_steps = max_steps
         self.mode = mode
@@ -201,7 +202,7 @@ class ReactAgent:
 
         self.__reset_agent()
 
-    def run(self, query, reset=True) -> None:
+    def run(self, query, reset=True) -> tuple[str, Any, list[Any]]:
 
         self.query = query
 
@@ -756,15 +757,13 @@ def to_string(data) -> str:
 def generate_one_plan(user_query: str):
     tools_list = ["notebook", "flights", "attractions", "accommodations", "restaurants", "googleDistanceMatrix",
                   "planner", "cities"]
-    model_name = 'gpt-4-1106-preview'
+    # model_name = 'gpt-4-1106-preview'
+    model_name = 'gpt-4o'
     agent = ReactAgent(None, tools=tools_list, max_steps=30, react_llm_name=model_name,
                        planner_llm_name=model_name)
     planner_results, scratchpad, action_log = agent.run(user_query)
-    agent.print_collected_data()
-    agent.save_collected_data('D:/semester 7/FYP/agents/generated_plans/collected_data.txt')
-    data = read_collected_data('D:/semester 7/FYP/agents/generated_plans/collected_data.txt')
-    print(data)
-    return planner_results, scratchpad, action_log
+
+    return planner_results
 
 
 if __name__ == '__main__':
