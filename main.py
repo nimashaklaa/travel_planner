@@ -71,6 +71,8 @@ async def update_plan(request: UpdateRequest):
         original_plan = request.original_plan
         choice = request.choice
 
+        print("passed data",user_query,original_plan,choice)
+
         # Generate updated plan
         updated_plan, scratchpad, actions_log = generate_updated_plan(user_query, original_plan, choice)
 
