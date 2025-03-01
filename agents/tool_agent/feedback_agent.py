@@ -21,9 +21,12 @@ import openai
 import time
 import pandas as pd
 from langchain_google_genai import ChatGoogleGenerativeAI
-import os
+from dotenv import load_dotenv
 
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+load_dotenv()  # ✅ Load variables from .env
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 GOOGLE_API_KEY = os.environ['GOOGLE_API_KEY']
 
 pd.options.display.max_info_columns = 200
@@ -808,7 +811,7 @@ def extract_trip_details(original_plan):
 
     return trip_details
 
-def generate_updated_plan(user_query_: str, original_plan: str):
+def generate_updated_plan(user_query_: str, original_plan: str, choice:int):
     tools_list = ["notebook", "flights", "attractions", "accommodations", "restaurants", "googleDistanceMatrix",
                   "planner", "cities"]
     # model_name = 'gpt-4-1106-preview'
@@ -818,15 +821,6 @@ def generate_updated_plan(user_query_: str, original_plan: str):
 
     # Step 1: Retrieve past trip details if available
     past_trip = extract_trip_details(original_plan)
-
-    # Step 2: Ask user what they want to modify
-    print("\n🔍 What do you want to update?")
-    print("1. Transportation")
-    print("2. Accommodation")
-    print("3. Attractions")
-    print("4. Restaurants")
-    print("5. All of the above")
-    choice = input("Enter the number of your choice: ").strip()
 
     update_queries = []
 
